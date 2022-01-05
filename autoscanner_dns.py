@@ -64,6 +64,7 @@ if __name__ == '__main__':
                         addr = dns_lookup(str(ipaddress))
                         for answer in addr:
                             answer.to_text()
+                            print(answer)
                             pretty_obj = json.dumps(netboxip, indent=4)
                             ipam_ip_dict = json.loads(pretty_obj)
                             ipam_ip_url=(ipam_ip_dict['results'][0]['url'])
@@ -73,5 +74,17 @@ if __name__ == '__main__':
                             response = requests.patch(ipam_ip_url, data=(jsonUpdate), headers=HEADERS, verify=False)
                     else:
                         netbox.ipam.update_ip(str(ipaddress),status="deprecated")
+            elif ipaddress in found_ip_in_network:
+                addr = dns_lookup(str(ipaddress))
+                for answer in addr:
+                    answer.to_text()
+                    print(answer)
+                    pretty_obj = json.dumps(netboxip, indent=4)
+                    ipam_ip_dict = json.loads(pretty_obj)
+                    ipam_ip_url=(ipam_ip_dict['results'][0]['url'])
+                    jsonUpdate_temp = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
+                    jsonUpdate = jsonUpdate_temp.replace('replace', str(answer))
+                    #jsonUpdate = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
+                    response = requests.create(ipam_ip_url, data=(jsonUpdate), headers=HEADERS, verify=False)
             else:
-                print('empty url')
+                print('NO IP Address')
