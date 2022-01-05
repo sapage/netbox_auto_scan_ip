@@ -4,10 +4,17 @@ from netbox import NetBox
 import requests
 import datetime
 import json
-import socket
+import dns.resolver
+
+def dns_lookup(host):
+    try:
+        dns.resolver.resolve_address(host)
+    except dns.resolver.NXDOMAIN:
+        return print('No DNS')
+    finally:
+        dns.resolver.resolve_address(host)
 
 requests.packages.urllib3.disable_warnings()
-
 
 API_TOKEN = "d3a51fe6e4ab6419c731ab0de11335c3682bcd06"
 HEADERS = {'Authorization': f'Token {API_TOKEN}', 'Content-Type': 'application/json', 'Accept': 'application/json'}
@@ -39,24 +46,32 @@ if __name__ == '__main__':
             request_url = f"{NB_URL}/api/ipam/ip-addresses/?q={ipaddress}/"
             ipaddress1 = requests.get(request_url, headers = HEADERS, verify=False)
             netboxip = ipaddress1.json()
-           # print(pretty_obj)
-            if netboxip['count'] == 0:
-                # Check if in network exists and not exist in netbox
-                if ipaddress in found_ip_in_network:
-                    # Adding in IP netbox
-                    netbox.ipam.create_ip_address(str(ipaddress))
+            netbox_test = (str(netboxip))
+            #print(netboxip)
+            if "'url'" in netbox_test:
+                pretty_obj = json.dumps(netboxip, indent=4)
+                #print(pretty_obj)
+                #print(netboxip['count'])
+                if netboxip['count'] == 0:
+                    # Check if in network exists and not exist in netbox
+                    if ipaddress in found_ip_in_network:
+                        # Adding in IP netbox
+                        netbox.ipam.create_ip_address(str(ipaddress))
+                    else:
+                        pass        
                 else:
-                    pass        
+                    #If not exists in netbox and network
+                    if ipaddress in found_ip_in_network:
+                        addr = dns.resolver.resolve_address(str(ipaddress))
+                        print(addr)
+                        pretty_obj = json.dumps(netboxip, indent=4)
+                        ipam_ip_dict = json.loads(pretty_obj)
+                        ipam_ip_url=(ipam_ip_dict['results'][0]['url'])
+                        jsonUpdate_temp = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
+                        jsonUpdate = jsonUpdate_temp.replace('replace', str(addr))
+                        #jsonUpdate = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
+                        response = requests.patch(ipam_ip_url, data=(jsonUpdate), headers=HEADERS, verify=False)
+                    else:
+                        netbox.ipam.update_ip(str(ipaddress),status="deprecated")
             else:
-                #If not exists in netbox and network
-                if ipaddress in found_ip_in_network:
-                    addr = socket.gethostbyaddr(str(ipaddress))
-                    pretty_obj = json.dumps(netboxip, indent=4)
-                    ipam_ip_dict = json.loads(pretty_obj)
-                    ipam_ip_url=(ipam_ip_dict['results'][0]['url'])
-                    jsonUpdate_temp = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
-                    jsonUpdate = jsonUpdate_temp.replace('replace', addr[0],1)
-                    response = requests.patch(ipam_ip_url, data=(jsonUpdate), headers=HEADERS, verify=False)
-                else:
-                    netbox.ipam.update_ip(str(ipaddress),status="deprecated")
-#
+                print('empty url')
