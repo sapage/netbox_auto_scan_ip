@@ -7,12 +7,11 @@ import json
 import dns.resolver
 
 def dns_lookup(host):
-    try:
-        dns.resolver.resolve_address(host)
-    except dns.resolver.NXDOMAIN:
-        return print('No DNS')
-    finally:
-        dns.resolver.resolve_address(host)
+  try:
+    ans = dns.resolver.resolve_address(host)
+    return ans
+  except:
+    return ""
 
 requests.packages.urllib3.disable_warnings()
 
@@ -26,7 +25,7 @@ if __name__ == '__main__':
     # Define the network to scan
     #my_network = input("Subnet: ")    
 
-    network = ["10.53.109.53/32"]
+    network = ["10.53.109.0/24"]
     for my_network in network:
             
         # Create the object
@@ -62,15 +61,16 @@ if __name__ == '__main__':
                 else:
                     #If not exists in netbox and network
                     if ipaddress in found_ip_in_network:
-                        addr = dns.resolver.resolve_address(str(ipaddress))
-                        print(addr)
-                        pretty_obj = json.dumps(netboxip, indent=4)
-                        ipam_ip_dict = json.loads(pretty_obj)
-                        ipam_ip_url=(ipam_ip_dict['results'][0]['url'])
-                        jsonUpdate_temp = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
-                        jsonUpdate = jsonUpdate_temp.replace('replace', str(addr))
-                        #jsonUpdate = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
-                        response = requests.patch(ipam_ip_url, data=(jsonUpdate), headers=HEADERS, verify=False)
+                        addr = dns_lookup(str(ipaddress))
+                        for answer in addr:
+                            answer.to_text()
+                            pretty_obj = json.dumps(netboxip, indent=4)
+                            ipam_ip_dict = json.loads(pretty_obj)
+                            ipam_ip_url=(ipam_ip_dict['results'][0]['url'])
+                            jsonUpdate_temp = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
+                            jsonUpdate = jsonUpdate_temp.replace('replace', str(answer))
+                            #jsonUpdate = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
+                            response = requests.patch(ipam_ip_url, data=(jsonUpdate), headers=HEADERS, verify=False)
                     else:
                         netbox.ipam.update_ip(str(ipaddress),status="deprecated")
             else:
