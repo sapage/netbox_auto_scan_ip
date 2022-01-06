@@ -23,26 +23,17 @@ netbox = NetBox(host="10.53.109.145", port=443, use_ssl=True, auth_token="xx")
 if __name__ == '__main__':
 
     # Define the network to scan
-    #my_network = input("Subnet: ")    
-
-    network = ["10.53.4.0/24", "10.1.0.0/24", "10.53.102.0/24", "10.53.103.0/24", "10.53.110.0/24", "10.53.112.0/24",
-     "10.1.15.0/24", "10.1.22.0/24", "10.1.27.0/24", "10.1.29.0/24", "10.1.0.0/24", "10.1.4.0/24", "10.1.5.0/24",
-     "10.1.55.0/24", "10.51.2.0", "10.1.14.0/24", "10.1.21.0/24", "10.2.0.0/24", "10.53.2.0/24", "10.51.253.0/24",
-     "10.2.55.0/24", "10.51.200.0/24", "10.51.201.0/24", "10.51.206.0/24", "10.53.105.0/24", "10.53.98.0/24",
-     "10.53.100.0/24", "10.53.109.0/24", "10.53.115.0/24", "10.53.117.0/24", "10.53.119.0/24", "10.53.124.0/24", 
-     "10.53.174.0/24", "10.53.128.0/24", "10.53.101.0/24", "10.53.16.0/24" , "10.53.122.0/24", "10.53.126.0/24",
-     "10.53.176.0/24", "10.153.101.0/24", "10.153.102.0/24", "10.153.103.0/24", "10.153.104.0/24", "10.153.105.0/24",
-     "10.153.107.0/24", "10.153.108.0/24", "10.153.109.0/24", "10.153.119.0/24", "10.153.120.0/24", "10.153.96.0/24", 
-     "10.153.97.0/24", "10.153.98.0/24", "10.153.99.0/24", "10.153.126.0/24", "10.153.127.0/24", "10.153.128.0/24", 
-     "10.153.129.0/24", "10.153.100.0/24", "10.53.1.0/24", "10.53.24.0/24", "10.58.1.0/24", "10.53.241.0/24", 
-     "10.53.26.0/24", "10.51.24.0/24", "10.51.0.0/24", "10.53.8.0/24", "10.1.0.0/24", "10.53.104.0/24", "10.53.113.0/24", 
-     "10.53.114.0/24", "10.1.15.0/24", "10.1.22.0/24", "10.1.27.0/24", "10.1.29.0/24", "10.1.30.0/24", "10.1.34.0/24", 
-     "10.1.35.0/24", "10.1.55.0/24", "10.51.24.0/24", "10.1.14.0/24", "10.1.21.0/24", "10.2.0.0/24", "10.53.251.0/24", 
-     "10.2.55.0/24", "10.51.202.0/24", "10.51.203.0/24", "10.53.106.0/24", "10.53.107.0/24", "10.53.108.0/24", 
-     "10.53.118.0/24", "10.53.120.0/24", "10.53.121.0/24", "10.53.97.0/24", "10.53.125.0/24", "10.53.129.0/24", 
-     "10.53.123.0/24", "10.53.127.0/24",  "10.153.119.0/24", "10.153.112.0/24", "10.153.232.0/24", "10.153.233.0/24", 
-     "10.53.2.0/24", "10.53.25.0/24", "10.58.2.0/24", "10.53.175.0/24", "10.53.240.0/24", "10.53.242.0/24", 
-     "10.53.243.0/24", "10.53.27.0/24"] 
+    #Branch ranges
+    network = [ "10.52.0.0/24", "10.52.1.0/24", "10.52.2.0/24", "10.52.3.0/24", "10.52.4.0/24", "10.52.5.0/24", 
+    "10.52.6.0/24", "10.52.7.0/24", "10.52.8.0/24", "10.52.9.0/24", "10.52.10.0/24", "10.52.11.0/24", "10.52.12.0/24",
+    "10.52.13.0/24", "10.52.14.0/24", "10.52.15.0/24", "10.52.16.0/22", "10.52.18.0/24", "10.52.19.0/24", "10.52.20.0/24", 
+    "10.52.21.0/24", "10.52.22.0/24", "10.52.23.0/24", "10.52.28.0/22", "10.52.32.0/24", "10.52.64.0/24", "10.52.76.0/22", 
+    "10.54.12.0/24", "10.54.13.0/24", "10.54.14.0/24", "10.54.16.0/22", "10.54.17.0/24", "10.54.18.0/24", "10.54.28.0/22",
+    "10.54.29.0/24", "10.54.30.0/24", "10.54.36.0/24", "10.54.36.0/24", "10.54.37.0/24", "10.54.38.0/24", "10.54.48.0/24", 
+    "10.54.49.0/24", "10.54.50.0/24", "10.54.60.0/24", "10.54.61.0/24", "10.54.62.0/24", "10.54.64.0/24", "10.54.65.0/24", 
+    "10.54.66.0/24", "10.54.68.0/24", "10.54.69.0/24", "10.54.70.0/24", "10.54.72.0/22", "10.54.88.0/24", "10.54.89.0/24", 
+    "10.54.90.0/24", "10.54.92.0/24", "10.54.93.0/24", "10.54.94.0/24", "10.54.104.0/28", "10.54.105.0/24", "10.54.106.0/24", 
+    "10.54.112.0/24", "10.54.113.0/24", "10.54.114.0/24", "10.54.120.0/24", "10.54.254.0/24"] 
     
     for my_network in network:
             
@@ -66,36 +57,22 @@ if __name__ == '__main__':
             netbox_test = (str(netboxip))
             if "'url'" in netbox_test:
                 pretty_obj = json.dumps(netboxip, indent=4)
-                if netboxip['count'] == 0:
-                    # Check if in network exists and not exist in netbox
-                    if ipaddress in found_ip_in_network:
-                        # Adding in IP netbox
-                        netbox.ipam.create_ip_address(str(ipaddress))
-                    else:
-                        pass        
-                else:
-                    #If not exists in netbox and network
-                    if ipaddress in found_ip_in_network:
-                        addr = dns_lookup(str(ipaddress))
-                        for answer in addr:
-                            answer.to_text()
-                            print(answer)
-                            pretty_obj = json.dumps(netboxip, indent=4)
-                            ipam_ip_dict = json.loads(pretty_obj)
-                            ipam_ip_url=(ipam_ip_dict['results'][0]['url'])
-                            jsonUpdate_temp = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
-                            jsonUpdate = jsonUpdate_temp.replace('replace', str(answer))
-                            response = requests.patch(ipam_ip_url, data=(jsonUpdate), headers=HEADERS, verify=False)
-                    else:
-                        netbox.ipam.update_ip(str(ipaddress),status="deprecated")
+                #If not exists in netbox and network
+                #if ipaddress in found_ip_in_network:
+                addr = dns_lookup(str(ipaddress))
+                for answer in addr:
+                    answer.to_text()
+                    print(answer)
+                    pretty_obj = json.dumps(netboxip, indent=4)
+                    ipam_ip_dict = json.loads(pretty_obj)
+                    ipam_ip_url=(ipam_ip_dict['results'][0]['url'])
+                    jsonUpdate_temp = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
+                    jsonUpdate = jsonUpdate_temp.replace('replace', str(answer))
+                    response = requests.patch(ipam_ip_url, data=(jsonUpdate), headers=HEADERS, verify=False)
             elif ipaddress in found_ip_in_network:
                 print(str(ipaddress))
-                netbox.ipam.create_ip_address(str(ipaddress))
-                #jsonUpdate_temp = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
-                #jsonUpdate = jsonUpdate_temp.replace('replace', str(answer))
-                #jsonUpdate = '{"vrf": 1, "tenant": 1, "dns_name": "New IP", "status": "active", "address": "ipadd"}'
-                #jsonUpdate = jsonUpdate_temp.replace('ipadd', str(ipaddress))
-                #request_url_post = f"{NB_URL}/api/ipam/ip-addresses/"
-                #response = requests.post(request_url_post, data=(jsonUpdate), headers=HEADERS, verify=False)
+                netbox.ipam.create_ip_address(str(ipaddress), vrf=1, tenant=1)
+            #else:
+            #            netbox.ipam.update_ip(str(ipaddress),status="deprecated", vrf=1, tenant=1)
             else:
-                print('NO IP Address')
+                pass
