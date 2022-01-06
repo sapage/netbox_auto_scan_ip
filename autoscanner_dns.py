@@ -2,7 +2,6 @@ import ipcalc
 import networkscan
 from netbox import NetBox
 import requests
-import datetime
 import json
 import dns.resolver
 
@@ -15,10 +14,10 @@ def dns_lookup(host):
 
 requests.packages.urllib3.disable_warnings()
 
-API_TOKEN = "xx"
+API_TOKEN = "d3a51fe6e4ab6419c731ab0de11335c3682bcd06"
 HEADERS = {'Authorization': f'Token {API_TOKEN}', 'Content-Type': 'application/json', 'Accept': 'application/json'}
 NB_URL = "https://10.53.109.145"
-netbox = NetBox(host="10.53.109.145", port=443, use_ssl=True, auth_token="xx")
+netbox = NetBox(host="10.53.109.145", port=443, use_ssl=True, auth_token="d3a51fe6e4ab6419c731ab0de11335c3682bcd06")
 
 if __name__ == '__main__':
 
@@ -55,10 +54,10 @@ if __name__ == '__main__':
             ipaddress1 = requests.get(request_url, headers = HEADERS, verify=False)
             netboxip = ipaddress1.json()
             netbox_test = (str(netboxip))
+
+            #If There is a Netbox IP update DNS if it exists. 
             if "'url'" in netbox_test:
                 pretty_obj = json.dumps(netboxip, indent=4)
-                #If not exists in netbox and network
-                #if ipaddress in found_ip_in_network:
                 addr = dns_lookup(str(ipaddress))
                 for answer in addr:
                     answer.to_text()
@@ -69,10 +68,15 @@ if __name__ == '__main__':
                     jsonUpdate_temp = '{"vrf": 1, "tenant": 1, "dns_name": "replace", "status": "active"}'
                     jsonUpdate = jsonUpdate_temp.replace('replace', str(answer))
                     response = requests.patch(ipam_ip_url, data=(jsonUpdate), headers=HEADERS, verify=False)
+
+            #If pingable but not in Netbox create Entry
             elif ipaddress in found_ip_in_network:
                 print(str(ipaddress))
                 netbox.ipam.create_ip_address(str(ipaddress), vrf=1, tenant=1)
+                
+            #If not pingable mark ad deprecated
             #else:
             #            netbox.ipam.update_ip(str(ipaddress),status="deprecated", vrf=1, tenant=1)
+            #Do nothing
             else:
                 pass
