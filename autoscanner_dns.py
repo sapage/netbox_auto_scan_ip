@@ -16,7 +16,7 @@ def dns_lookup(host):
 
 requests.packages.urllib3.disable_warnings()
 
-API_TOKEN = "d3a51fe6e4ab6419c731ab0de11335c3682bcd06"
+API_TOKEN = "xx"
 HEADERS = {
     "Authorization": f"Token {API_TOKEN}",
     "Content-Type": "application/json",
@@ -27,7 +27,7 @@ netbox = NetBox(
     host="10.53.109.145",
     port=443,
     use_ssl=True,
-    auth_token="d3a51fe6e4ab6419c731ab0de11335c3682bcd06",
+    auth_token="xx",
 )
 
 if __name__ == "__main__":
